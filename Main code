@@ -1,0 +1,272 @@
+#Nova classe - cada produto apresenta ID, nome e preço
+class Item: 
+
+  def __init__(self, id, nome, preco):
+    self.id = id
+    self.nome = nome
+    self.preco = preco
+
+  def set_id(self, id): 
+    self.id = id
+
+  def set_nome(self, nome):
+    self.nome = nome
+
+  def set_preco(self, preco):
+    self.preco = preco
+  
+  def get_id(self):
+     return self.id
+
+  def get_nome(self):
+    return self.nome
+
+  def get_preco(self):
+    return self.preco
+
+#Declaração do carrinho - delimitação de tamanho do vetor e preenchimento dos espaços para evitar lixo de memória
+vazio = Item(0, "vazio", 0.00)
+carrinho = [vazio, vazio, vazio, vazio, vazio]
+
+#Declaração dos objetos da classe Item
+hidratante = Item(1, "Hidratante facial", 50.99)
+sabonete = Item(2, "Sabonete facial", 79.99)
+tonico = Item(3, "Tônico facial", 45.50)
+protetor = Item(4, "Protetor solar", 90.20)
+serum = Item(5, "Sérum facial", 62.90)
+
+#Declaração dos vetores de estoque, produtos da loja e quantidade de cada produto no carrinho. 
+estoque = [20, 25, 10, 15, 10]
+produtos = [hidratante, sabonete, tonico, protetor, serum]
+quantCarrinho = [0, 0, 0, 0, 0]
+
+#Definição de funções para:
+
+#Exibir menu
+def opcoes():
+  print("1 - Adicionar item")
+  print("2 - Remover item")
+  print("3 - Exibir carrinho")
+  print("4 - Limpar carrinho")
+  print("5 - Finalizar pedido")
+  print("6 - Cancelar compra")
+
+#Exibir os produtos - exibe apenas os produtos disponíveis em estoque
+def exibirProdutos():
+  e = 0
+  for p in produtos:
+    if not(estoque[e] == 0):
+      print(f"ID: {p.get_id()} - Nome: {p.get_nome()} - Preço: {p.get_preco()} ")
+    e = e +1
+       
+#Exibir produtos que estão no carrinho - Nome, quantidade, preço e valor total do carrinhoo.
+def exibirCarrinho():
+  k=0
+  soma = 0.0
+  for i in carrinho:
+    soma = soma + i.get_preco() * quantCarrinho[k]
+    if not(quantCarrinho[k] == 0):  
+      print(f"{i.get_nome()} - {quantCarrinho[k]} unidades - {i.get_preco()} reais cada") 
+    k = k+1
+  print(f"Total = {soma:.2f}") 
+
+#Testar se o carrinho está vazio
+def carrinhoVazio():
+  for i in quantCarrinho:
+    if i != 0:
+      return False
+  return True 
+
+#objetos para iniciar os "whiles"   
+opcao = 0
+menu = True
+
+#Título
+print('Carrinho de Compras \n')
+
+#Roda o codigo enquanto o usuário não digitar a opção de "Cancelar compra"
+while opcao != "6":
+
+  quantidade = 0 #Neste objeto é atribuida a quantidade de produtos a serem adicionados ao carrinho
+  compra = False #Objeto para verificar se uma compra foi efetivada ou apenas cancelada
+
+  #Permite que o usuário volte para o menu estando em outras partes do código
+  while menu == True:
+    opcoes()
+    opcao = input("Digite uma opção: ")
+    print("\n")
+
+    #Testa se o usuário está digitando números fora das opçoes
+    if opcao != "1" and opcao != "2" and opcao != "3" and opcao != "4" and opcao != "5" and opcao != "6" :
+      print("Opcao inválida!")
+
+    #Encerra a compra 
+    elif opcao == "6":
+      break
+    #Sai da tela de menu, uma opção válida foi escolhida
+    else: 
+      menu = False
+
+    print("\n")
+
+  #Permite que o usuário volte para o menu quando "menu == True".
+  while menu == False:
+
+    if opcao == "1": #Adicionar Item
+ 
+      exibirProdutos()
+      pedido =int(input("Digite o ID do produto que deseja adicionar ao carrinho ou digite 0 para voltar ao menu inicial: "))
+      
+      #Validação da entrada do usuário - não permite que valores fora das opções
+      while 0>pedido or pedido > 5:
+        print("\n")
+        print("Opçao invalida! ")
+        print("\n")
+        exibirProdutos()
+        pedido =int(input("Digite o ID do produto que deseja adicionar ao carrinho ou digite 0 para voltar ao menu inicial: "))
+      print("\n")
+
+      #Para que o usuário possa voltar ao menu
+      if pedido == 0:
+        menu = True
+        print("\n")
+        break
+
+      #Adiciona o produto ao carrinhho
+      else:
+        carrinho[pedido-1] = produtos[pedido-1]
+        quantidade = int(input("Digite a quantidade desse produto que deseja adicionar ao carrinho: "))
+        print("\n")
+
+        #Só incrementa a quantidade de produto ao carrinho se essa quantidade não ultrapassar o estoque e se o número não for negativo.
+        if not((estoque[pedido-1])-quantidade < 0 or quantidade < 0):
+          estoque[pedido-1] = estoque[(pedido-1)] - quantidade
+          quantCarrinho[pedido-1] = quantCarrinho[pedido-1] + quantidade
+
+          #Mensagens para informar ao usuário o produto e a quantidade adicionadas ao carrinho
+          if quantidade == 1:
+            print(f"{quantidade} unidade do {produtos[pedido-1].get_nome()} foi adicionada ao seu carrinho")
+
+          elif quantidade > 1:
+            print(f"{quantidade} unidades do {produtos[pedido-1].get_nome()} foram adicionadas ao seu carrinho")
+
+        #Caso a quantidade digitada seja inadequada:
+        else:
+          print("Quantidade invalida.")
+
+      print("\n")
+
+    
+    if opcao == "2": #Remover item
+     
+     #Impede erros de decremento no carrinho já vazio
+     if (carrinhoVazio()):
+        print("Não é possivel retirar itens pois seu carrinho já está vazio.") 
+        menu = True   
+        print("\n")
+        break
+    
+    #Exibe os produtos para que o usuário possa escolher o que quer retirar
+     else:
+      print(f"Produtos em seu carrinho: \n")
+      exibirCarrinho()
+      print("\n")
+      pedido =int(input("Digite o ID do produto que deseja retirar do carrinho ou digite 0 para voltar ao menu inicial: "))
+
+      #Validação da entrada do usuário - não permite que valores fora das opções
+      while 0>pedido or pedido>5:
+        print("Opçao invalida!")
+        exibirProdutos()
+        pedido =int(input("Digite o ID do produto que deseja retirar do carrinho ou digite 0 para voltar ao menu inicial: "))
+      
+      #Para que o usuário possa voltar ao menu
+      if pedido == 0:
+        menu = True
+        print("\n")
+        break
+  
+      qRetirar =int(input("Digite quantas unidades desse produto você deseja retirar do carrinho: "))
+      print("\n")
+      
+      #Testa se a quantidade a ser retirada é um número positivo e se é igual ou menor que a quantidade do produto escolhido presente no carrinho
+      if qRetirar > 0 and qRetirar <= quantCarrinho[pedido-1]:
+        quantCarrinho[pedido-1] = quantCarrinho[pedido-1] - qRetirar
+        estoque[pedido-1] = estoque[pedido-1] + qRetirar
+        print(f"{qRetirar} unidade(s) do {produtos[pedido-1].get_nome()} foi/foram retirada(s) do seu carrinho")
+      else:
+        print("Quantidade inválida")
+
+      print("\n")
+
+      
+    if opcao == "3": #Exibir carrinho
+
+      #Mensagem de erro para quando o carrinho ja está vazio
+      if (carrinhoVazio()):
+        print("Seu carrinho está vazio! ")
+        menu = True
+        print("\n")
+        break
+
+      else:
+       print(f"Produtos em seu carrinho: \n")
+       exibirCarrinho()
+
+      menu = True
+      print("\n")
+      break
+
+
+    if opcao == "4": #Limpar carrinho
+      
+      #Impede erros de decremento e economiza leitura de código
+      if (carrinhoVazio()):
+        print("Não é possivel realizar a operação pois seu carrinho já está vazio.") 
+        menu = True   
+        print("\n")
+        break
+      
+      #Neste caso, mesmo tendo declarado o carrinho inicialmente com o objeto "vazio", atribuições foram feitas, substituindo esses objetos.
+      #Assim, foi necessário o uso do for para "limpar" esses espaços preenchidos.
+      else:
+        k = 0 
+        for i in carrinho: 
+          i.set_id = 0
+          i.set_nome = "vazio"
+          i.set_preco = 0.00
+        for j in quantCarrinho:
+          quantCarrinho[k] = 0  
+          k+=1
+        estoque = [20, 25, 10, 15, 10]
+        print("Seu carrinho foi esvaziado! ")
+        menu = True
+        print("\n")
+        break
+
+    if opcao == "5": #Finalizar compra
+      
+      #Mensagem de erro para o usuário que tenta finalizar uma compra com o carrinho vazio
+      if (carrinhoVazio()):
+        print("Não é possivel finalizar seu pedido pois seu carrinho está vazio.") 
+        menu = True   
+        print("\n")
+        break
+      
+      #Como pedido na atividade, o usuário recebe uma "nota de compra", com todos os produtos que comprou
+      else:
+        print("Nota de compra: \n")
+        exibirCarrinho()
+        print("Pedido finalizado! Obrigada, volte sempre!")
+        compra = True #Confirma que uma compra foi feita e evita que a mensagem de compra cancelada sejqa exibida.
+        print("\n")
+        opcao = "6"
+        break
+
+#Para uma compra cancelada, testa duas possibilidades (carrinho vazio e carrinho preenchido), para exibir mensagen coerentes. 
+if not(compra):
+  if not(carrinhoVazio()):
+    print("Compra cancelada. Os seguintes produtos foram removidos do seu carrinho: ")
+    estoque = [20, 25, 10, 15, 10] #Devolve produtos para o estoque
+    exibirCarrinho()
+  else:
+    print("Seu carrinho já estava vazio! A compra foi cancelada.")
