@@ -1,7 +1,7 @@
 # Carrinho de Compras em Python
 
 Este projeto implementa um sistema de carrinho de compras em Python, utilizando Programação Orientada a Objetos (POO), listas, validação de entrada e manipulação de estoque.  
-O usuário pode adicionar, remover e visualizar itens, além de finalizar ou cancelar uma compra.
+O usuário pode adicionar, remover e visualizar itens, além de finalizar ou cancelar uma compra. Projeto finalizado em 24 de Outubro de 2022.
 
 ---
 
